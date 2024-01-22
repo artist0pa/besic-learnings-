@@ -1,9 +1,4 @@
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -12,16 +7,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
 
-public abstract  class snak_game extends JFrame implements ActionListener,KeyListener {
+public   class snak_game extends JPanel implements ActionListener,KeyListener {
     private final int wid=300;
     private  final int hight=300;
     private final int dot_size=10;
     private final int all_dot=900;
-    private final int rand_pos=29;
-    private final int delay=140;
 
-    private final int x[]=new int[all_dot];
-    private final int y[]=new int [all_dot];
+    private final int[] x =new int[all_dot];
+    private final int[] y=new int [all_dot];
 
     private boolean left=false;
     private boolean right=true;
@@ -43,21 +36,22 @@ public abstract  class snak_game extends JFrame implements ActionListener,KeyLis
     }
     public void ingame(){
         addKeyListener(this);
-        setBackground(color.black);
+        setBackground(Color.black);
         setFocusable(true);
 
         setPreferredSize(new Dimension(wid,hight));
         loadimage();
         game_var();
+        int delay = 140;
         timer=new Timer(delay,this);
         timer.start();
     }
     private void loadimage(){
-        ImageIcon iid=new ImageIcon("C:\\Users\\DELL\\Downloads\\apple.png");
+        ImageIcon iid=new ImageIcon("C:\\Users\\DELL\\Downloads\\ll.png");
         app=iid.getImage();
-        ImageIcon iia=new ImageIcon("C:\\Users\\DELL\\Downloads\\snake.png");
+        ImageIcon iia=new ImageIcon("C:\\Users\\DELL\\Downloads\\snake1.png");
         ball=iia.getImage();
-        ImageIcon iib=new ImageIcon("C:\\Users\\DELL\\Downloads\\snake-head.png");
+        ImageIcon iib=new ImageIcon("C:\\Users\\DELL\\Downloads\\143.png");
         head=iib.getImage();
     }
     private void game_var(){
@@ -95,7 +89,7 @@ private void checkapple(){
         }
 
 } private void check_collaps(){
-        for (int z=dot; z>0; z++){
+        for (int z=dot; z>0; z--){
             if((z>3) && (x[0]==x[z]) && (y[0]==y[z])){
 ingame=false;
             }
@@ -118,18 +112,19 @@ ingame=false;
         }
     }
 private void locateapple(){
-        int r=(int)(Math.random()*rand_pos);
+    int rand_pos = 29;
+    int r=(int)(Math.random()* rand_pos);
         apple_x=(r*dot_size);
-        r=(int)(Math.random()*rand_pos);
+        r=(int)(Math.random()* rand_pos);
         apple_y=(r*dot_size);
 }
-@override
-public void paint1(Graphics g){
+
+public void paint1(Graphics g ){
         super.paintComponents(g);
         paint(g);
 
 }
-    private void paint(Graphics g){
+    public void paint(Graphics g){
 if(ingame){
     g.drawImage(app,apple_x,apple_y,this);
     for (int z=0; z<dot; z++){
@@ -143,5 +138,70 @@ if(ingame){
 }else {
     gameOver(g);
 }
+    }private void gameOver(Graphics g){
+        String msg="Game over";
+        Font small=new Font("helvetica",Font.BOLD,14);
+        FontMetrics metrics=getFontMetrics(small);
+
+        g.setColor(Color.white);
+        g.setFont(small);
+        g.drawString(msg,(wid- metrics.stringWidth(msg))/2,hight/2);
     }
-}
+    @Override
+    public void actionPerformed(ActionEvent e){
+        if(ingame){
+            checkapple();
+            check_collaps();
+            move();
+        }
+        repaint();
+    }
+    @Override
+    public void keyPressed(KeyEvent e){
+        int key=e.getKeyCode();
+        if((key==KeyEvent.VK_LEFT)&&(!right)){
+            left=true;
+            up=false;
+            down=false;
+        }
+        if((key==KeyEvent.VK_RIGHT)&&(!left)){
+            right=true;
+            up=false;
+            down=false;
+        }if ((key==KeyEvent.VK_UP)&&(!down)){
+            up=true;
+            left=false;
+            right=false;
+        }if((key==KeyEvent.VK_DOWN)&&(!up)){
+            down=true;
+            left=false;
+            right=false;
+
+        }
+    }
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    public static void main(String[] args) {
+      for(int i=0; i<2; i++){
+        JFrame frame=new JFrame("SNAKE GAME");
+        snak_game snak= new snak_game();
+
+        frame.getContentPane().add(snak);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300,300);
+        frame.setVisible(true);
+
+        frame.addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent we){
+            System.exit(0);
+        }
+        });
+    }
+}}
