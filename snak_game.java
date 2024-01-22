@@ -69,6 +69,79 @@ public abstract  class snak_game extends JFrame implements ActionListener,KeyLis
         }
         locateapple();
     }
+private  void move(){
+        for (int z=dot; z>0;z--){
+            x[z]=x[z-1];
+            y[z]=y[z-1];
 
+        }
+        if (left){
+            x[0]-=dot_size;
+        }
+        if(right){
+            x[0]+=dot_size;
+        }
+        if(up){
+            x[0]-=dot_size;
+        }
+        if (down){
+            x[0]+=dot_size;
+        }
+}
+private void checkapple(){
+        if(x[0]==apple_x&&y[0]==apple_y){
+            dot++;
+            locateapple();
+        }
 
+} private void check_collaps(){
+        for (int z=dot; z>0; z++){
+            if((z>3) && (x[0]==x[z]) && (y[0]==y[z])){
+ingame=false;
+            }
+            if(y[0]>hight){
+                ingame=false;
+            }
+            if (y[0]<0){
+                ingame=false;
+            }
+            if(x[0]>wid){
+                ingame=false;
+            }
+            if (x[0]<0){
+                ingame=false;
+            }
+            if(!ingame){
+                timer.stop();
+            }
+
+        }
+    }
+private void locateapple(){
+        int r=(int)(Math.random()*rand_pos);
+        apple_x=(r*dot_size);
+        r=(int)(Math.random()*rand_pos);
+        apple_y=(r*dot_size);
+}
+@override
+public void paint1(Graphics g){
+        super.paintComponents(g);
+        paint(g);
+
+}
+    private void paint(Graphics g){
+if(ingame){
+    g.drawImage(app,apple_x,apple_y,this);
+    for (int z=0; z<dot; z++){
+        if (z==0){
+        g.drawImage(head,x[z],y[z],this);}
+        else {
+            g.drawImage(ball,x[z],y[z],this);
+        }
+    }
+    Toolkit.getDefaultToolkit().sync();
+}else {
+    gameOver(g);
+}
+    }
 }
